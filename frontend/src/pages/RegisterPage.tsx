@@ -3,12 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { api, formatApiError } from '../services/api';
 import { Input } from '../components/common/Input';
 import { Button } from '../components/common/Button';
-import { CheckSquare, AlertCircle, ArrowRight } from 'lucide-react';
+import { CheckSquare, AlertCircle, ArrowRight, Shield, User } from 'lucide-react';
 
 export const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState<'USER' | 'ADMIN'>('USER');
   const [errors, setErrors] = useState<{
     email?: string;
     password?: string;
@@ -30,8 +31,8 @@ export const RegisterPage: React.FC = () => {
 
     if (!password) {
       errs.password = 'Password is required';
-    } else if (password.length < 6) {
-      errs.password = 'Password must be at least 6 characters';
+    } else if (password.length < 8) {
+      errs.password = 'Password must be at least 8 characters';
     }
 
     if (password !== confirmPassword) {
@@ -53,10 +54,11 @@ export const RegisterPage: React.FC = () => {
       await api.register({
         email: email.trim(),
         password,
+        role,
       });
       // Redirect to login with confirmation message (per prompt requirement)
       navigate('/login', {
-        state: { message: 'Registration successful! Please sign in with your new account.' },
+        state: { message: `Registration successful! Please sign in as ${role === 'ADMIN' ? 'Admin' : 'User'}.` },
       });
     } catch (err: unknown) {
       setApiError(formatApiError(err));
@@ -79,7 +81,8 @@ export const RegisterPage: React.FC = () => {
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
+      {/* Card widened to lg to fit 2-column password row */}
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-lg px-4 sm:px-0">
         <div className="bg-white py-8 px-6 shadow-sm sm:rounded-2xl border border-slate-200 sm:px-10">
           {apiError && (
             <div
@@ -118,37 +121,78 @@ export const RegisterPage: React.FC = () => {
               autoComplete="email"
             />
 
-            <Input
-              id="register-password"
-              label="Password"
-              type="password"
-              required
-              placeholder="At least 6 characters"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }));
-              }}
-              error={errors.password}
-              disabled={isSubmitting}
-              autoComplete="new-password"
-            />
+            {/* Password + Confirm Password — two columns side by side */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                id="register-password"
+                label="Password"
+                type="password"
+                required
+                placeholder="At least 8 characters"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }));
+                }}
+                error={errors.password}
+                disabled={isSubmitting}
+                autoComplete="new-password"
+              />
 
-            <Input
-              id="register-confirm-password"
-              label="Confirm Password"
-              type="password"
-              required
-              placeholder="Re-enter password"
-              value={confirmPassword}
-              onChange={(e) => {
-                setConfirmPassword(e.target.value);
-                if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: undefined }));
-              }}
-              error={errors.confirmPassword}
-              disabled={isSubmitting}
-              autoComplete="new-password"
-            />
+              <Input
+                id="register-confirm-password"
+                label="Confirm Password"
+                type="password"
+                required
+                placeholder="Re-enter password"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  if (errors.confirmPassword) setErrors((prev) => ({ ...prev, confirmPassword: undefined }));
+                }}
+                error={errors.confirmPassword}
+                disabled={isSubmitting}
+                autoComplete="new-password"
+              />
+            </div>
+
+            {/* Role Selection: USER or ADMIN */}
+            <div className="space-y-1.5 pt-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                Account Role
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  id="role-user-btn"
+                  onClick={() => setRole('USER')}
+                  className={`flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all cursor-pointer ${
+                    role === 'USER'
+                      ? 'border-indigo-600 bg-indigo-50/60 text-indigo-900 shadow-xs ring-2 ring-indigo-600/20'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
+                  }`}
+                >
+                  <User className={`w-5 h-5 mb-1 ${role === 'USER' ? 'text-indigo-600' : 'text-slate-400'}`} />
+                  <span className="text-xs font-bold">Normal User</span>
+                  <span className="text-[10px] text-slate-500 mt-0.5">Manage own tasks</span>
+                </button>
+
+                <button
+                  type="button"
+                  id="role-admin-btn"
+                  onClick={() => setRole('ADMIN')}
+                  className={`flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all cursor-pointer ${
+                    role === 'ADMIN'
+                      ? 'border-indigo-600 bg-indigo-50/60 text-indigo-900 shadow-xs ring-2 ring-indigo-600/20'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
+                  }`}
+                >
+                  <Shield className={`w-5 h-5 mb-1 ${role === 'ADMIN' ? 'text-indigo-600' : 'text-slate-400'}`} />
+                  <span className="text-xs font-bold">Admin</span>
+                  <span className="text-[10px] text-slate-500 mt-0.5">Manage all tasks & users</span>
+                </button>
+              </div>
+            </div>
 
             <Button
               id="register-submit-btn"
@@ -158,7 +202,7 @@ export const RegisterPage: React.FC = () => {
               isLoading={isSubmitting}
               rightIcon={<ArrowRight className="w-4 h-4" />}
             >
-              Create Account
+              Create {role === 'ADMIN' ? 'Admin' : 'User'} Account
             </Button>
           </form>
 

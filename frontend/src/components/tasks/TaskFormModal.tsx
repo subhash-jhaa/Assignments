@@ -19,7 +19,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
 }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [status, setStatus] = useState<TaskStatus>('pending');
+  const [status, setStatus] = useState<TaskStatus>('PENDING');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -32,7 +32,7 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
     } else {
       setTitle('');
       setDescription('');
-      setStatus('pending');
+      setStatus('PENDING');
     }
     setError(null);
   }, [initialTask, isOpen]);
@@ -116,9 +116,9 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
-              onClick={() => setStatus('pending')}
+              onClick={() => setStatus('PENDING')}
               className={`px-3 py-2 text-xs font-medium rounded-lg border text-center transition cursor-pointer ${
-                status === 'pending'
+                status === 'PENDING'
                   ? 'bg-amber-50 border-amber-400 text-amber-900 font-semibold ring-1 ring-amber-400'
                   : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
@@ -127,9 +127,9 @@ export const TaskFormModal: React.FC<TaskFormModalProps> = ({
             </button>
             <button
               type="button"
-              onClick={() => setStatus('completed')}
+              onClick={() => setStatus('COMPLETED')}
               className={`px-3 py-2 text-xs font-medium rounded-lg border text-center transition cursor-pointer ${
-                status === 'completed'
+                status === 'COMPLETED'
                   ? 'bg-emerald-50 border-emerald-500 text-emerald-900 font-semibold ring-1 ring-emerald-500'
                   : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}

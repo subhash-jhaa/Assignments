@@ -12,6 +12,7 @@ export const registerValidator = [
 
   body('role')
     .optional()
+    .customSanitizer((val) => (typeof val === 'string' ? val.toUpperCase() : val))
     .isIn(['USER', 'ADMIN']).withMessage('Role must be USER or ADMIN.'),
 ];
 

@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 export const createTaskValidator = [
   body('title')
@@ -13,10 +13,15 @@ export const createTaskValidator = [
 
   body('status')
     .optional()
+    .customSanitizer((val) => (typeof val === 'string' ? val.toUpperCase() : val))
     .isIn(['PENDING', 'COMPLETED']).withMessage('Status must be PENDING or COMPLETED.'),
 ];
 
 export const updateTaskValidator = [
+  param('id')
+    .notEmpty().withMessage('Task ID is required.')
+    .isUUID().withMessage('Task ID must be a valid UUID.'),
+
   body('title')
     .optional()
     .trim()
@@ -30,5 +35,20 @@ export const updateTaskValidator = [
 
   body('status')
     .optional()
+    .customSanitizer((val) => (typeof val === 'string' ? val.toUpperCase() : val))
     .isIn(['PENDING', 'COMPLETED']).withMessage('Status must be PENDING or COMPLETED.'),
 ];
+
+export const taskIdValidator = [
+  param('id')
+    .notEmpty().withMessage('Task ID is required.')
+    .isUUID().withMessage('Task ID must be a valid UUID.'),
+];
+
+export const taskQueryValidator = [
+  query('status')
+    .optional()
+    .customSanitizer((val) => (typeof val === 'string' ? val.toUpperCase() : val))
+    .isIn(['PENDING', 'COMPLETED']).withMessage('Status filter must be PENDING or COMPLETED.'),
+];
+

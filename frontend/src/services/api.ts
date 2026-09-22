@@ -103,8 +103,8 @@ export const formatApiError = (error: unknown): string => {
 
 export const api = {
   // Authentication
-  async register(payload: RegisterPayload): Promise<User> {
-    const res = await apiClient.post<User>('/auth/register', payload);
+  async register(payload: RegisterPayload): Promise<{ message: string; user: User }> {
+    const res = await apiClient.post<{ message: string; user: User }>('/auth/register', payload);
     return res.data;
   },
 
@@ -115,18 +115,18 @@ export const api = {
 
   // Tasks
   async getTasks(): Promise<Task[]> {
-    const res = await apiClient.get<Task[]>('/tasks');
-    return res.data;
+    const res = await apiClient.get<{ tasks: Task[] }>('/tasks');
+    return res.data.tasks;
   },
 
   async createTask(payload: CreateTaskPayload): Promise<Task> {
-    const res = await apiClient.post<Task>('/tasks', payload);
-    return res.data;
+    const res = await apiClient.post<{ task: Task }>('/tasks', payload);
+    return res.data.task;
   },
 
   async updateTask(id: string, payload: UpdateTaskPayload): Promise<Task> {
-    const res = await apiClient.put<Task>(`/tasks/${id}`, payload);
-    return res.data;
+    const res = await apiClient.put<{ task: Task }>(`/tasks/${id}`, payload);
+    return res.data.task;
   },
 
   async deleteTask(id: string): Promise<void> {
@@ -135,8 +135,8 @@ export const api = {
 
   // Users (Admin only)
   async getUsers(): Promise<User[]> {
-    const res = await apiClient.get<User[]>('/users');
-    return res.data;
+    const res = await apiClient.get<{ users: User[] }>('/users');
+    return res.data.users;
   },
 
   async deleteUser(id: string): Promise<void> {

@@ -2,7 +2,7 @@ import type { UserRole } from '../constants/roles';
 
 export { type UserRole } from '../constants/roles';
 
-export type TaskStatus = 'pending' | 'completed';
+export type TaskStatus = 'PENDING' | 'COMPLETED';
 
 export interface User {
   id: string;

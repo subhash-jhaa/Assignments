@@ -146,4 +146,82 @@ describe('DELETE /api/tasks/:id', () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toContain('deleted');
   });
+
+  it('admin can delete any user task', async () => {
+    const admin = await createUserAndLogin('admin_del@example.com', 'password123', 'ADMIN');
+    const user = await createUserAndLogin('user_del@example.com');
+
+    const createRes = await request(app)
+      .post('/api/tasks')
+      .set('Authorization', `Bearer ${user.token}`)
+      .send({ title: 'Task to be deleted by admin' });
+
+    const taskId = createRes.body.task.id;
+    const res = await request(app)
+      .delete(`/api/tasks/${taskId}`)
+      .set('Authorization', `Bearer ${admin.token}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.message).toContain('deleted');
+  });
 });
+
+describe('GET /api/tasks/:id', () => {
+  it('user can view their own task', async () => {
+    const user = await createUserAndLogin('view_own@example.com');
+    const createRes = await request(app)
+      .post('/api/tasks')
+      .set('Authorization', `Bearer ${user.token}`)
+      .send({ title: 'Viewable Task' });
+
+    const taskId = createRes.body.task.id;
+    const res = await request(app)
+      .get(`/api/tasks/${taskId}`)
+      .set('Authorization', `Bearer ${user.token}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.task.id).toBe(taskId);
+  });
+
+  it("user cannot view another user's task", async () => {
+    const userA = await createUserAndLogin('user_a@example.com');
+    const userB = await createUserAndLogin('user_b@example.com');
+
+    const createRes = await request(app)
+      .post('/api/tasks')
+      .set('Authorization', `Bearer ${userA.token}`)
+      .send({ title: "Private Task" });
+
+    const taskId = createRes.body.task.id;
+    const res = await request(app)
+      .get(`/api/tasks/${taskId}`)
+      .set('Authorization', `Bearer ${userB.token}`);
+
+    expect(res.statusCode).toBe(403);
+  });
+});
+
+describe('GET /api/tasks?status=...', () => {
+  it('should filter tasks by status', async () => {
+    const user = await createUserAndLogin('filter_user@example.com');
+
+    await request(app)
+      .post('/api/tasks')
+      .set('Authorization', `Bearer ${user.token}`)
+      .send({ title: 'Pending Task', status: 'PENDING' });
+
+    await request(app)
+      .post('/api/tasks')
+      .set('Authorization', `Bearer ${user.token}`)
+      .send({ title: 'Done Task', status: 'COMPLETED' });
+
+    const res = await request(app)
+      .get('/api/tasks?status=COMPLETED')
+      .set('Authorization', `Bearer ${user.token}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.tasks).toHaveLength(1);
+    expect(res.body.tasks[0].title).toBe('Done Task');
+  });
+});
+

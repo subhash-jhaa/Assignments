@@ -17,7 +17,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onDelete,
   showOwner = false,
 }) => {
-  const isCompleted = task.status === 'completed';
+  const isCompleted = task.status === 'COMPLETED';
 
   const formattedDate = new Date(task.createdAt).toLocaleDateString('en-US', {
     month: 'short',

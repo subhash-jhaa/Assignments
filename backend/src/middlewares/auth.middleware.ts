@@ -1,6 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../utils/jwt.utils';
+import { verifyToken, JwtPayload } from '../utils/jwt.utils';
 import { AppError } from '../errors/AppError';
+
+// Augment the Express Request interface to include the authenticated user.
+// Declared here (in a module file) using module augmentation.
+declare module 'express-serve-static-core' {
+  interface Request {
+    user?: JwtPayload;
+  }
+}
 
 /**
  * Middleware: Authenticate JWT

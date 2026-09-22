@@ -43,7 +43,7 @@ export const UserTable: React.FC<UserTableProps> = ({
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
-                        {u.role === 'admin' ? (
+                        {u.role === 'ADMIN' ? (
                           <Shield className="w-4 h-4 text-indigo-600" />
                         ) : (
                           <UserIcon className="w-4 h-4 text-slate-500" />
@@ -65,7 +65,7 @@ export const UserTable: React.FC<UserTableProps> = ({
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium uppercase tracking-wide ${
-                        u.role === 'admin'
+                        u.role === 'ADMIN'
                           ? 'bg-indigo-100 text-indigo-800'
                           : 'bg-emerald-100 text-emerald-800'
                       }`}

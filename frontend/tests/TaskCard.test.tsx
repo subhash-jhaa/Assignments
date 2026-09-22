@@ -7,7 +7,7 @@ const mockTask: Task = {
   id: 'task-test-1',
   title: 'Implement unit testing with Vitest',
   description: 'Write comprehensive tests for UI components and API integration.',
-  status: 'pending',
+  status: 'PENDING',
   userId: 'user-1',
   userEmail: 'developer@example.com',
   createdAt: '2026-09-22T10:00:00.000Z',

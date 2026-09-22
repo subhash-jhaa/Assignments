@@ -98,7 +98,7 @@ export const DashboardPage: React.FC = () => {
 
   // Handle Status Toggle (Pending <-> Completed)
   const handleToggleStatus = async (task: Task) => {
-    const nextStatus: TaskStatus = task.status === 'completed' ? 'pending' : 'completed';
+    const nextStatus: TaskStatus = task.status === 'COMPLETED' ? 'PENDING' : 'COMPLETED';
     // Optimistic UI update
     setTasks((prev) =>
       prev.map((t) => (t.id === task.id ? { ...t, status: nextStatus } : t))
@@ -299,7 +299,7 @@ export const DashboardPage: React.FC = () => {
                 <tbody className="divide-y divide-slate-100">
                   {tasks.map((task) => {
                     const isEditing = editingTaskId === task.id;
-                    const isCompleted = task.status === 'completed';
+                    const isCompleted = task.status === 'COMPLETED';
 
                     return (
                       <tr key={task.id} className="hover:bg-slate-50/70 transition-colors">
@@ -433,7 +433,7 @@ export const DashboardPage: React.FC = () => {
             <div className="sm:hidden space-y-3">
               {tasks.map((task) => {
                 const isEditing = editingTaskId === task.id;
-                const isCompleted = task.status === 'completed';
+                const isCompleted = task.status === 'COMPLETED';
 
                 return (
                   <div

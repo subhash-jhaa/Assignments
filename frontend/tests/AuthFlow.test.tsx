@@ -50,7 +50,7 @@ describe('Integration Test: Authentication Flow & Route Protection', () => {
       user: {
         id: 'test-user-id',
         email: 'testuser@example.com',
-        role: 'user' as const,
+        role: 'USER' as const,
       },
     };
 
